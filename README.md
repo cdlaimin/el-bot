@@ -8,50 +8,114 @@
 [![GitHub](https://img.shields.io/github/license/YunYouJun/el-bot)](https://github.com/YunYouJun/el-bot/blob/master/LICENSE)
 ![node-current](https://img.shields.io/node/v/el-bot)
 
-一个基于 [mirai-ts](https://github.com/YunYouJun/mirai-ts)，使用 TS/JS 编写，快速、可配置、可自定义插件的 QQ 机器人框架。
+一个基于 Node.js、使用 TypeScript 编写的可配置 QQ 机器人框架，采用 pnpm monorepo 管理。
 
-> el-bot 是一个非盈利的开源项目，仅供交流学习使用。请勿用于商业或非法用途，因使用而与腾讯公司产生的一切纠纷均与原作者无关。
+> el-bot 是一个非盈利的开源项目，仅供交流学习使用。请勿用于商业或非法用途。
+> 本项目为个人学习项目，与腾讯公司并无关联。
 
 - 使用文档：<https://docs.bot.elpsy.cn>
 - API 文档：<https://www.yunyoujun.cn/el-bot/>
 
+## QQ 遥控 Codex、CodeBuddy 与 dsh
+
+通过 `el-bot agent` 遥控本机 Codex、CodeBuddy 或 DeepSeek Harness（dsh），支持 QQ 官方私聊绑定、项目续聊、任务停止、单次审批和结果查询。原有 `el-bot codex` 入口继续兼容，旧配置默认使用 Codex。
+
+源码中可以直接运行：
+
+```bash
+pnpm install
+pnpm build
+# 以 CodeBuddy 为例；dsh 使用独立 profile，并改为 --agent dsh
+pnpm cli agent --profile codebuddy init --agent codebuddy --project /absolute/path/to/project
+pnpm cli agent --profile codebuddy check --all
+pnpm cli agent --profile codebuddy start
+```
+
+需要 Node.js 22.18+、所选程序的 CLI 与账户 / 模型配置，以及 QQ 官方机器人。`init` 在本机交互填写 AppID / AppSecret，密钥隐藏输入；启动后在 QQ 私聊发送终端的 `/pair ...`。
+不同程序使用独立 profile，配置、凭据和状态位于 `~/.el-bot/codex/<profile>/`。Codex profile 还隔离账户目录，ACP 程序沿用自己的本机账户配置。
+可通过 `pnpm --filter el-bot pack --pack-destination ./dist` 生成独立安装包；
+安装后将示例中的 `pnpm cli` 替换为 `el-bot`，无需克隆仓库。新增 ACP 功能需要当前源码构建或包含该功能的安装包；当前改动不代表新包已发布到 npm。
+
+先看[程序选择与能力对比](docs/codex/agents.md)，完整安装、迁移和命令说明见[QQ 遥控接入](docs/development/codex-remote.md)。
+
+在 QQ 中的使用示例：
+
+```text
+/project my-project
+检查 README 的安装步骤，修正文档里的过期命令
+/status
+/result
+继续补充 Windows 用户的安装说明
+```
+
+每个项目保留独立会话，需要升级权限时使用 `/approval` 查看请求，再逐次 `/approve` 或 `/reject`。
+CodeBuddy / dsh 使用 ACP，不提供 Codex 专用的 `/steer`、`/review`、API / Desktop 管理和操作系统沙箱；账户、续聊与停止能力见[对比说明](docs/codex/agents.md#能力对比)。
+查看[功能展示](docs/codex/index.md)了解任务、审批和续聊流程。
+
+### 让 AI 帮你接入
+
+复制 [AI 快速接入提示词](docs/codex/ai-setup.md#复制给你的-ai-助手)，提供自己的项目路径，
+让本机 Codex、Claude Code 等助手检查环境、执行 `init --no-prompt` 和连接检查。
+AppSecret 在本机填写，QQ 登录与绑定由本人完成。先核对版本、`el-bot agent --help` 与 `init --help`，使用与当前功能匹配的构建。
+实例与账户布局见[实例隔离与恢复](docs/codex/instances.md)。无需 YunLeFun 账户。
+
+文档构建自动生成 `llms.txt`、`llms-full.txt` 和原始 Markdown，方便 AI 读取同版本接入说明。
+
+## ⚠️ BREAKING CHANGES (REFACTORING)
+
+**正在重构开发中，因此它的很多代码可能已经失效，并将被移除。**
+
+- QQ
+  - 迁移 [mirai](https://github.com/mamoe/mirai) 至 [NapCatQQ](https://github.com/NapNeko/NapCatQQ)
+  - 迁移 [mirai-ts](https://github.com/YunYouJun/mirai-ts) 至 [node-napcat-ts](https://github.com/huankong-team/node-napcat-ts)
+- 使用 Node.js 与 TypeScript，pnpm 统一管理工作区和依赖目录。
+- 工程约定参考 [starter-monorepo](https://github.com/YunYouJun/starter-monorepo)：共享依赖 catalog、tsdown、Vitest 和 ESLint。
+- QQ 官方机器人遥控本机 AI 程序随统一 CLI 提供；私有 `apps/qq-codex` 模块不单独发布，使用步骤与社区参考见[接入文档](./docs/development/codex-remote.md)。
+
 ## 开始
 
-mirai 1.0 版本以上推荐使用官方启动器 [mirai-console-loader](https://github.com/iTXTech/mirai-console-loader) 自行启动 [mirai](https://github.com/mamoe/mirai) 与 [mirai-api-http](https://github.com/mamoe/mirai-api-http) 插件。
+参考以下文档，启动 QQ 协议端。
 
-（因为种种原因，本项目不接受任何关于如何使用 mirai 的问题，你应当具有自行启动 mirai 的能力，但欢迎 el-bot 项目本身的反馈。）
+- [NapCatQQ](https://github.com/NapNeko/NapCatQQ)
+
+### 环境与安装
+
+仓库开发使用 Node.js 24（见 `.node-version`）和 pnpm 11.24.0（见 `packageManager`）。
+
+```sh
+pnpm add el-bot
+```
+
+### 初始化文件
 
 > 你也可以直接参考 [el-bot-template](https://github.com/ElpsyCN/el-bot-template)。
 
-```sh
-npm install el-bot
-# yarn add el-bot
-```
+```ts
+import { createBot } from 'el-bot'
 
-```js
-const Bot = require("el-bot");
-
-const bot = new Bot({
-  qq: 114514,
-  setting: {
-    host: "localhost",
-    port: 4859,
-    authKey: "el-psy-congroo",
-    enableWebsocket: true
-  }
-  // bot: ...
-});
-bot.start();
+// Load el-bot.config.ts from the current directory.
+const bot = await createBot()
+await bot.start()
 ```
 
 So easy! Right?
 
 详细使用说明请参见 [el-bot 文档](https://docs.bot.elpsy.cn/)。
 
-## 升级
+### 编写插件
+
+- [node-napcat-ts](https://github.com/huankong-team/node-napcat-ts)
+
+### 启动
+
+```bash
+pnpm exec el-bot
+```
+
+### 升级
 
 ```sh
-npm install el-bot@latest
+pnpm add el-bot@latest
 ```
 
 相关变动请参见 [Releases](https://github.com/YunYouJun/el-bot/releases)。
@@ -61,8 +125,6 @@ npm install el-bot@latest
 有问题和建议欢迎提 Issue，谢谢！（在此之前，请确保您已仔细阅读文档。）
 
 ## 说明
-
-请勿将其用于商业或非法用途。
 
 ### [与 koishi 的区别](https://docs.bot.elpsy.cn/about.html#与-koishi-的区别)
 
@@ -77,49 +139,34 @@ npm install el-bot@latest
 
 ## Thanks
 
-感谢以下项目为 el-bot 提供的开发运行环境与带来的灵感。
-
+- [NapCatQQ](https://github.com/NapNeko/NapCatQQ)
+- [node-napcat-ts](https://github.com/huankong-team/node-napcat-ts)
+- [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - [mirai](https://github.com/mamoe/mirai)
 - [mirai-console](https://github.com/mamoe/mirai-console)
 - [mirai-api-http](https://github.com/mamoe/mirai-api-http)
 - [mirai-ts](https://github.com/YunYouJun/mirai-ts)
 - [koishi](https://github.com/koishijs/koishi)
 
-## 开发
+## 参与开发
 
 ```sh
 git clone https://github.com/YunYouJun/el-bot
 cd el-bot
-pnpm i
+pnpm install
+pnpm build
+pnpm test
+pnpm lint
+pnpm typecheck:packages
 ```
 
-配置测试机器人（看情况配置吧）
+- `pnpm dev`：启动需要本地机器人配置的 demo。
+- `pnpm dev:lib`：监听 QQ SDK 与脚手架构建。
+- `pnpm typecheck`：完整检查，包括仍在迁移的旧插件和示例，保持完整覆盖。
+- `pnpm docs:dev` / `pnpm docs:build`：开发 / 构建文档站。
 
-```sh
-cp bot/.env.example .env
-```
+目录职责、新增包和迁移范围见 [Monorepo 开发](./docs/development/monorepo.md)。
 
-启动 mcl，须已配置 [mirai-console-loader](https://github.com/iTXTech/mirai-console-loader)
+## CHANGELOG
 
-```sh
-npm run mcl
-```
-
-开发测试（运行起来吧）
-
-```sh
-npm run dev:bot
-```
-
-开发 el-bot 库
-
-```sh
-npm run dev:lib
-```
-
-### 构建
-
-```sh
-# 构建 el-bot
-npm run build
-```
+See [CHANGELOG.md](./CHANGELOG.md).

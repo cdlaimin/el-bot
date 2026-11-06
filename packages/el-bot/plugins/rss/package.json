@@ -1,0 +1,17 @@
+{
+  "name": "rss",
+  "version": "0.0.2",
+  "private": true,
+  "description": "订阅 RSS 信息",
+  "author": {
+    "name": "YunYouJun",
+    "url": "https://www.yunyoujun.cn",
+    "email": "me@yunyoujun.cn"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

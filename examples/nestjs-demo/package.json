@@ -1,0 +1,39 @@
+{
+  "name": "@el-bot/example-nestjs",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "description": "\u8fd9\u53ea\u662f\u4e00\u4e2a\u5f00\u53d1\u7528\u7684\u6d4b\u8bd5\u673a\u5668\u4eba\u3002",
+  "author": {
+    "name": "YunYouJun",
+    "email": "me@yunyoujun.cn",
+    "url": "https://www.yunyoujun.cn"
+  },
+  "main": "src/index.ts",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "nodemon dist/main",
+    "build": "nest build",
+    "lint": "eslint .",
+    "dev": "pnpm start:dev",
+    "test": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "catalog:",
+    "@nestjs/core": "catalog:",
+    "@nestjs/platform-express": "catalog:",
+    "class-transformer": "catalog:",
+    "class-validator": "catalog:",
+    "el-bot": "workspace:*",
+    "reflect-metadata": "catalog:"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "catalog:",
+    "nodemon": "catalog:",
+    "ts-loader": "catalog:",
+    "typescript": "catalog:"
+  }
+}

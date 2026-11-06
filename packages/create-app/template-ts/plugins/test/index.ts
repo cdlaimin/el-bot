@@ -1,15 +1,13 @@
-import type Bot from 'el-bot'
-import type { TestOptions } from './options'
+import { defineBotPlugin } from 'el-bot'
+import testOptions from './options'
 
-/**
- * 这是一个测试插件
- */
-export default (ctx: Bot, options: TestOptions) => {
-  const { mirai } = ctx
-  ctx.logger.info(options)
-  mirai.on('message', async(msg) => {
-    ctx.logger.info(msg)
-    if (msg.plain === 'test')
-      msg.reply('Link Start!')
-  })
-}
+export default defineBotPlugin({
+  pkg: { name: 'test' },
+  setup(bot) {
+    bot.command('test')
+      .description(testOptions.help)
+      .usage('test')
+      .example('test')
+      .action(() => 'Link Start!')
+  },
+})

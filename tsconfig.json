@@ -1,11 +1,39 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
     "paths": {
-      "el-bot": ["packages/el-bot/src/index.ts"]
-    }
+      "el-bot": [
+        "packages/el-bot/index.ts"
+      ],
+      "el-bot/nest": [
+        "packages/el-bot/core/nest/index.ts"
+      ],
+      "qq-sdk": [
+        "packages/qq-sdk/src/index.ts"
+      ],
+      "@el-bot/codex": [
+        "packages/codex/src/index.ts"
+      ],
+      "qq-sdk/official": [
+        "packages/qq-sdk/src/official/index.ts"
+      ],
+      "#qq-sdk": [
+        "packages/qq-sdk/src/index.ts"
+      ]
+    },
+    "allowJs": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["plugins/*/src/**/*.ts", "packages/*/src", "packages/*/src/**/*/package.json"],
-  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/*.spec.ts"
+  ]
 }

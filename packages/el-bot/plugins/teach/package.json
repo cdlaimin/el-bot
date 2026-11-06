@@ -1,0 +1,20 @@
+{
+  "name": "teach",
+  "version": "0.1.0",
+  "private": true,
+  "description": "问答学习",
+  "el-bot": {
+    "db": true
+  },
+  "author": {
+    "name": "YunYouJun",
+    "url": "https://www.yunyoujun.cn",
+    "email": "me@yunyoujun.cn"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

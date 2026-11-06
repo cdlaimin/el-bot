@@ -1,0 +1,23 @@
+{
+  "name": "@el-bot/example-simple",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A simple demo for el-bot.",
+  "scripts": {
+    "dev": "el-bot",
+    "dev:w": "vite-node -w ../../packages/el-bot/bin/el-bot.ts",
+    "build": "tsdown",
+    "start": "vite-node src/index.ts",
+    "start:prod": "nodemon dist/index.js"
+  },
+  "dependencies": {
+    "axios": "catalog:"
+  },
+  "devDependencies": {
+    "el-bot": "workspace:*",
+    "nodemon": "catalog:",
+    "qq-sdk": "workspace:*",
+    "tsdown": "catalog:"
+  }
+}

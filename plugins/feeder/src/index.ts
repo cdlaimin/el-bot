@@ -1,14 +1,16 @@
-import type Bot from 'el-bot'
-import RssFeedEmitter from 'rss-feed-emitter'
+import type { Bot } from 'el-bot'
 import type { MessageType } from 'mirai-ts'
+import type { EventEmitter } from 'node:events'
 import type { IFeeder } from './feeder.scheme'
+import consola from 'consola'
+import RssFeedEmitter from 'rss-feed-emitter'
 import { Feeder } from './feeder.scheme'
 
 const feeder = new RssFeedEmitter({
   skipFirstLoad: true,
-})
+}) as RssFeedEmitter & EventEmitter
 
-export default async function(ctx: Bot) {
+export default async function (ctx: Bot) {
   const { cli } = ctx
 
   const feederConfig = await Feeder.find({}, { target: 0 })
@@ -22,7 +24,7 @@ export default async function(ctx: Bot) {
     .option('-a, --add <url>', '添加订阅链接')
     .option('-r, --remove <url>', '移除订阅链接')
     .option('-l, --list', '显示当前订阅列表')
-    .action(async(options) => {
+    .action(async (options) => {
       const msg = ctx.mirai.curMsg as MessageType.GroupMessage
       const qq = msg.sender.id
       const groupId = msg.sender.group.id
@@ -81,25 +83,23 @@ export default async function(ctx: Bot) {
       }
     })
 
-  feeder.on('new-item', (item) => {
-    console.log(item.url)
+  feeder.on('new-item', (item: { title: string, link: string, url: string }) => {
+    consola.info(item.url)
   })
 
   /**
    * 订阅
    * @param userFeedConfig
-   * @param qq QQ
-   * @param groupId 群号
    */
   function subscribe(userFeedConfig: IFeeder) {
-    const index = userFeedConfig._id
+    const index = String(userFeedConfig._id)
     feeder.add({
       url: userFeedConfig.url,
       refresh: userFeedConfig.refresh || 1000,
       eventName: index,
-    } as any)
+    })
 
-    feeder.on(index, (item) => {
+    feeder.on(index, (item: { title: string, link: string, url: string }) => {
       const content = `${item.title}: ${item.link}`
       userFeedConfig.targets.forEach((subscriber) => {
         if (subscriber.groupId)

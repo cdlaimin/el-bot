@@ -1,0 +1,17 @@
+{
+  "name": "nbnhhsh",
+  "version": "0.0.3",
+  "private": true,
+  "description": "能不能好好说话？",
+  "author": {
+    "name": "YunYouJun",
+    "url": "https://www.yunyoujun.cn",
+    "email": "me@yunyoujun.cn"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

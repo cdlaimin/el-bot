@@ -1,0 +1,20 @@
+{
+  "name": "counter",
+  "version": "0.0.1",
+  "private": true,
+  "description": "计数器",
+  "el-bot": {
+    "db": true
+  },
+  "author": {
+    "name": "YunYouJun",
+    "url": "https://www.yunyoujun.cn",
+    "email": "me@yunyoujun.cn"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

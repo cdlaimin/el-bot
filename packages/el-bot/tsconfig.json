@@ -1,10 +1,31 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "target": "ESNext",
+    "lib": [
+      "ESNext"
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
-      "el-bot": ["packages/el-bot/src"]
-    }
-  },
-  "include": ["src", "src/**/*/package.json"]
+      "el-bot": [
+        "index.ts"
+      ],
+      "#qq-sdk": [
+        "../qq-sdk/src/index.ts"
+      ]
+    },
+    "resolveJsonModule": true,
+    "types": [
+      "vite/client"
+    ],
+    "strict": true,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  }
 }

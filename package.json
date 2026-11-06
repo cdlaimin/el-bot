@@ -1,19 +1,22 @@
 {
+  "name": "el-bot-monorepo",
+  "type": "module",
   "private": true,
-  "repository": "https://github.com/YunYouJun/el-bot",
+  "packageManager": "pnpm@11.24.0",
   "author": {
     "name": "云游君",
     "email": "me@yunyoujun.cn",
     "url": "https://www.yunyoujun.cn"
   },
   "license": "AGPL-3.0",
-  "engines": {
-    "node": ">=12.0.0"
-  },
+  "homepage": "https://docs.bot.elpsy.cn/",
+  "repository": "https://github.com/YunYouJun/el-bot",
   "bugs": {
     "url": "https://github.com/YunYouJun/el-bot/issues"
   },
-  "homepage": "https://docs.bot.elpsy.cn/",
+  "engines": {
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
+  },
   "ecosystem": {
     "el-bot-api": "https://github.com/ElpsyCN/el-bot-api",
     "el-bot-plugins": "https://github.com/ElpsyCN/el-bot-plugins",
@@ -22,42 +25,73 @@
     "el-bot-web": "https://github.com/ElpsyCN/el-bot-web"
   },
   "scripts": {
-    "build": "cd packages/el-bot && npm run build",
-    "build:demo": "cd packages/demo && npm run build",
-    "build:api": "cd packages/el-bot && npm run build:api",
-    "dev": "run-p dev:*",
-    "dev:bot": "cd packages/demo && npm run dev",
-    "dev:lib": "cd packages/el-bot && npm run dev",
-    "docs:dev": "cd docs && npm run dev",
-    "docs:build": "cd docs && npm run build",
-    "lint": "eslint \"**/*.{ts,js}\"",
-    "lint:fix": "eslint \"**/*.{ts,js}\" --fix",
-    "mcl": "cd mcl && ./mcl",
+    "mygo:dev": "go -C apps/el-bot-mygo-prototype tool mygo dev",
+    "mygo:build": "go -C apps/el-bot-mygo-prototype tool mygo build",
+    "mygo:check": "go -C apps/el-bot-mygo-prototype run . --check",
+    "icons:generate": "pnpm --filter @el-bot/client icons:generate",
+    "icons:check": "pnpm --filter @el-bot/client icons:check",
+    "client:dev": "pnpm --filter @el-bot/client desktop:dev",
+    "client:build": "pnpm --filter @el-bot/client desktop:build",
+    "menubar:dev": "pnpm client:dev",
+    "menubar:build": "pnpm client:build",
+    "clients:build": "./script/build_clients.sh",
+    "build": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" -r --if-present run build",
+    "build:lib": "pnpm build",
+    "build:demo": "pnpm -C demo run build",
+    "build:api": "pnpm -C packages/el-bot run build:api",
+    "demo": "pnpm -C demo run start",
+    "demo:dev": "pnpm -C demo run dev",
+    "example:simple": "pnpm -C examples/simple run dev",
+    "dev": "pnpm demo:dev",
+    "dev:bot": "pnpm dev:simple",
+    "dev:simple": "pnpm -C examples/simple run dev",
+    "docs:dev": "pnpm -C docs run dev",
+    "docs:build": "pnpm -C docs run build",
+    "docs:examples": "tsx scripts/build-card-examples.ts",
+    "lint": "eslint --cache .",
+    "lint:fix": "pnpm lint --fix",
     "cqhttp": "cd go-cqhttp && ./go-cqhttp faststart",
     "cqhttp:update": "cd go-cqhttp && ./go-cqhttp update",
-    "start": "pnpm start -C packages/demo",
-    "prepare": "husky install"
+    "start": "pnpm run start:demo",
+    "release": "bumpp packages/el-bot/package.json --git-check --commit \"chore(release): v{version}\"",
+    "start:demo": "pnpm -C demo start",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit && pnpm typecheck:docs",
+    "dev:lib": "pnpm --filter qq-sdk --filter @el-bot/create-app --parallel run dev",
+    "docs:preview": "pnpm -C docs run preview",
+    "test:watch": "vitest",
+    "typecheck:packages": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" -r --if-present run typecheck",
+    "typecheck:docs": "pnpm -C docs typecheck",
+    "qq:codex": "tsx apps/qq-codex/src/index.ts",
+    "wecom": "tsx packages/wecom/src/cli.ts",
+    "test:cli": "node scripts/smoke-cli.mjs",
+    "cli": "tsx packages/el-bot/bin/el-bot.ts"
+  },
+  "dependencies": {
+    "axios": "catalog:"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@types/fs-extra": "catalog:",
+    "@types/node": "catalog:",
+    "@unocss/eslint-plugin": "catalog:",
+    "bumpp": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-format": "catalog:",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
+    "nodemon": "catalog:",
+    "pm2": "catalog:",
+    "publint": "catalog:",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "lint-staged": {
     "*.{js,ts}": [
       "eslint --fix"
     ]
-  },
-  "devDependencies": {
-    "@antfu/eslint-config-ts": "^0.13.1",
-    "@types/node": "^16.11.12",
-    "eslint": "^8.4.1",
-    "husky": "7.0.4",
-    "koishi-core": "^3.14.2",
-    "lint-staged": "^12.1.2",
-    "nodemon": "^2.0.15",
-    "npm-run-all": "^4.1.5",
-    "ts-loader": "^9.2.6",
-    "ts-node": "^10.4.0",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.5.4"
-  },
-  "peerDependencies": {
-    "koishi-core": "^3.14.2"
   }
 }

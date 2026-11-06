@@ -1,0 +1,17 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "private": true,
+  "description": "通用的管理员功能",
+  "author": {
+    "name": "YunYouJun",
+    "url": "https://www.yunyoujun.cn",
+    "email": "me@yunyoujun.cn"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}
